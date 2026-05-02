@@ -35,7 +35,7 @@ def generate_job_visualizations(db_path='jobs_data.sqlite3'):
     tech_series = pd.Series(tech_counts).sort_values(ascending=False)
     
     plt.figure(figsize=(10, 8))
-    sns.barplot(x=tech_series.values, y=tech_series.index, palette='mako')
+    sns.barplot(x=tech_series.values, y=tech_series.index, hue=tech_series.index, palette='mako', legend=False)
     plt.title('Tech Stack Demand for Student Roles', fontsize=15)
     plt.xlabel('Frequency in Descriptions', fontsize=12)
     plt.ylabel('Technology', fontsize=12)
