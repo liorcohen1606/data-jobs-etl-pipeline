@@ -30,7 +30,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # הוספת -f מאפשרת לעקוף חסימות ב-gitignore
           git add -f top_technologies.png jobs_data.sqlite3
           git commit -m "Auto-update: New job data and visualization" || exit 0
           git push
