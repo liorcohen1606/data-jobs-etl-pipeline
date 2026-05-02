@@ -1,4 +1,4 @@
-# Israeli Tech Job Market ETL Pipeline
+# Student Tech Market ETL Pipeline
 
 ## Project Overview
 This project implements an automated ETL pipeline designed to track job opportunities for students in the Israeli tech market. The system handles the entire data lifecycle: from fetching real-time listings via external APIs to processing and persistent storage in a local SQL database.
