@@ -1,6 +1,12 @@
 import requests
 import pandas as pd
 from api_keys import RAPID_API_KEY
+import os
+
+try:
+    from api_keys import RAPID_API_KEY
+except ImportError:
+    RAPID_API_KEY = os.getenv('RAPID_API_KEY')
 
 def extract_job_data():
     """
