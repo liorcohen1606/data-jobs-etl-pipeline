@@ -1,0 +1,35 @@
+name: Daily Job Tracker
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Runs every day at 08:00 UTC
+  workflow_dispatch: # Allows you to run it manually from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run ETL Pipeline
+        env:
+          RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}
+        run: python main.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add top_technologies.png jobs_data.sqlite3
+          git commit -m "Auto-update: New job data and visualization" || exit 0
+          git push
