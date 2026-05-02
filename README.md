@@ -1,32 +1,23 @@
-# Student Tech Market ETL Pipeline
+# Student-Tech-Market ETL: Automated Israel Entry-Level Job Tracker
 
-## Project Overview
-This project implements an automated ETL pipeline designed to track job opportunities for students in the Israeli tech market. The system handles the entire data lifecycle: from fetching real-time listings via external APIs to processing and persistent storage in a local SQL database.
+An automated ETL pipeline that extracts, transforms, and visualizes tech job opportunities for students in Israel.
 
-## Architecture & Workflow
-The pipeline is modularly structured into three main stages:
-
-1. **Extract**: Fetches real-time job data from multiple sources (LinkedIn, Indeed, Glassdoor) using the JSearch API. It supports multi-query execution to gather data for different roles (e.g., Data Student and Software Student) in a single run.
-2. **Transform**: Processes raw JSON responses using Pandas. This stage includes data cleaning, handling missing values, and standardizing features like job titles and locations to ensure data quality.
-3. **Load**: Persists the cleaned data into a local SQLite database, allowing for historical tracking and efficient querying.
+## Features
+* **Extract**: Pulls real-time job data from JSearch API.
+* **Transform**: Cleans data using Pandas, removes duplicates, and filters for relevant roles.
+* **Load**: Stores processed data in a SQLite database for persistence.
+* **Visualize**: Generates insights on the most demanded technologies in the current market.
 
 ## Tech Stack
-* **Language**: Python 3.x
-* **Data Processing**: Pandas
-* **Database**: SQLite3
-* **API Integration**: Requests (JSearch via RapidAPI)
+* Python (Pandas, Matplotlib, Seaborn)
+* SQLite
+* GitHub Actions (CI/CD)
 
-## Key Technical Features
-* **Multi-Query Support**: Aggregates data from diverse search terms into a unified dataset.
-* **Localization**: Optimized for the Israeli market with specific geographic filtering.
-* **Security**: Externalized API credentials using secret management to prevent exposure in version control.
+## Visual Insights
+![Technology Demand](top_technologies.png)
 
-## Getting Started
-### Prerequisites
-* Python 3.x
-* Required libraries: `pip install pandas requests`
-
-### Configuration
-Create an `api_keys.py` file in the root directory and add your API key:
-```python
-RAPID_API_KEY = "your_api_key_here"
+## How to Run
+1. Clone the repository.
+2. Install dependencies: `pip install -r requirements.txt`.
+3. Add your API key to `api_keys.py`.
+4. Run `python main.py`.

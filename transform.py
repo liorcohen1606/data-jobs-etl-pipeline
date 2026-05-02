@@ -22,15 +22,28 @@ def transform_job_data(raw_data):
         'job_apply_link': 'apply_link'
     }
 
-    # Select only required columns and rename them
+    #Column selection and renaming
     df = df[list(mapping.keys())]
     df.rename(columns=mapping, inplace=True)
 
-    # Data Cleaning: Handle missing values in the city column
+    # Removing duplicate postings based on job title and company name
+    initial_count = len(df)
+    df.drop_duplicates(subset=['job_title', 'company'], keep='first', inplace=True)
+    
+    #Handling missing values
     df['city'] = df['city'].fillna('Israel')
+    df.dropna(subset=['job_title', 'company'], inplace=True)
 
-    # Basic string cleaning
+    # Text cleaning
+    # Stripping whitespace from critical string columns
     df['job_title'] = df['job_title'].str.strip()
+    df['company'] = df['company'].str.strip()
 
-    print(f"Transformation complete: Processed {len(df)} professional records.")
+    # Type casting for future visualization
+    # Ensuring description is string type for keyword searching
+    df['description'] = df['description'].astype(str)
+
+    removed = initial_count - len(df)
+    print(f"Transformation complete: Processed {len(df)} records (Removed {removed} duplicates).")
+    
     return df
