@@ -2,8 +2,11 @@ name: Daily Job Tracker
 
 on:
   schedule:
-    - cron: '0 8 * * *' # Runs every day at 08:00 UTC
+    - cron: '0 8 * * *'
   workflow_dispatch: 
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -32,4 +35,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git add -f top_technologies.png jobs_data.sqlite3
           git commit -m "Auto-update: New job data and visualization" || exit 0
+          git pull --rebase origin main
           git push
