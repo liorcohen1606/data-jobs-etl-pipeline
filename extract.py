@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-from secrets import RAPID_API_KEY
+from api_keys import RAPID_API_KEY
 
 def extract_job_data():
     """

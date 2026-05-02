@@ -1,6 +1,6 @@
 # Python environment
 venv/
 __pycache__/
-secrets.py
+api_keys.py
 # Database files
 *.sqlite3

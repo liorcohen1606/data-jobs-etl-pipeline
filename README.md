@@ -27,6 +27,6 @@ The pipeline is modularly structured into three main stages:
 * Required libraries: `pip install pandas requests`
 
 ### Configuration
-Create a `secrets.py` file in the root directory and add your API key:
+Create an `api_keys.py` file in the root directory and add your API key:
 ```python
 RAPID_API_KEY = "your_api_key_here"
