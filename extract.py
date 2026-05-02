@@ -1,22 +1,28 @@
 import requests
 import pandas as pd
-from api_keys import RAPID_API_KEY
 import os
 
-try:
-    from api_keys import RAPID_API_KEY
-except ImportError:
-    RAPID_API_KEY = os.getenv('RAPID_API_KEY')
-
+def get_api_key():
+    try:
+        from api_keys import RAPID_API_KEY
+        return RAPID_API_KEY
+    except ImportError:
+        return os.getenv('RAPID_API_KEY')
+    
 def extract_job_data():
     """
     Fetches real-time tech jobs in Israel from JSearch 
     """
     url = "https://jsearch.p.rapidapi.com/search"
+    api_key = get_api_key()
+    
+    if not api_key:
+        print("Error: RAPID_API_KEY not found.")
+        return []
     
     
     headers = {
-        "x-rapidapi-key":RAPID_API_KEY, 
+        "x-rapidapi-key":api_key, 
         "x-rapidapi-host": "jsearch.p.rapidapi.com"
     }
     # List of queries we want to search for
