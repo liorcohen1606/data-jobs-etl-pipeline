@@ -1,0 +1,6 @@
+# Python environment
+venv/
+__pycache__/
+secrets.py
+# Database files
+*.sqlite3

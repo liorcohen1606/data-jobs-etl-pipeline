@@ -1,36 +1,51 @@
 import requests
 import pandas as pd
-
-API_URL = "https://jsonplaceholder.typicode.com/posts"
+from secrets import RAPID_API_KEY
 
 def extract_job_data():
     """
-    Fetches job listing data from the specified API URL.
-    Returns the data as a list of dictionaries, or an empty list if it fails.
+    Fetches real-time tech jobs in Israel from JSearch 
     """
-    print("Starting data extraction...")
+    url = "https://jsearch.p.rapidapi.com/search"
+    
+    
+    headers = {
+        "x-rapidapi-key":RAPID_API_KEY, 
+        "x-rapidapi-host": "jsearch.p.rapidapi.com"
+    }
+    # List of queries we want to search for
+    search_queries = ["Data Student", "Software Student"]
+    
+    # This empty list will collect jobs from all queries
+    all_extracted_jobs = []
 
-    try:
-        # Send a GET request to the API
-        response = requests.get(API_URL)
-        # Check if the request was successful (HTTP Status code 200)
-        response.raise_for_status()
-        # Parse the response text into a JSON format
-        data = response.json()
-        print("Data extracted successfully!")
-        return data
-    except requests.exceptions.RequestException as e:
-        # Handle any network errors or bad responses (Http status code 404 \ 500)
-        print(f"Error fetching data: {e}")
-        return []
+    for query in search_queries:
+        print(f"Fetching jobs for query: '{query}'...")
+        
+        querystring = {
+            "query": query, 
+            "country": "Israel",
+            "num_pages": "1"
+        }
+
+        try:
+            print("Connecting to JSearch API...")
+            response = requests.get(url, headers=headers, params=querystring)
+            response.raise_for_status()
+            
+            data = response.json()
+            jobs = data.get('data', []) # JSearch nests results under the 'data' key
+            
+            print(f"Found {len(jobs)} jobs for '{query}'.")
+            # Add the jobs found in this iteration to our main list
+            all_extracted_jobs.extend(jobs)
+
+        except Exception as e:
+            print(f"Extraction failed for '{query}': {e}")
+            print(f"Total jobs extracted across all queries: {len(all_extracted_jobs)}")
+    return all_extracted_jobs
 
 if __name__ == "__main__":
-    # Execute the extraction function
-    raw_data = extract_job_data()
-
-    if raw_data:
-        print(raw_data[0])
-    
-
+    results = extract_job_data()
 
 
