@@ -3,7 +3,7 @@ name: Daily Job Tracker
 on:
   schedule:
     - cron: '0 8 * * *'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
   contents: write
