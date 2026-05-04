@@ -26,7 +26,11 @@ def extract_job_data():
         "x-rapidapi-host": "jsearch.p.rapidapi.com"
     }
     # List of queries we want to search for
-    search_queries = ["Data Student", "Software Student","DevOps Student"]
+    search_queries = [
+        "Data Student in Israel", 
+        "Software Student in Israel", 
+        "DevOps Student in Israel"
+    ]
     
     # This empty list will collect jobs from all queries
     all_extracted_jobs = []
