@@ -27,9 +27,9 @@ def extract_job_data():
     }
     # List of queries we want to search for
     search_queries = [
-        "Data Student in Israel", 
-        "Software Student in Israel", 
-        "DevOps Student in Israel"
+        "Data Student", 
+        "Software Student", 
+        "DevOps Student"
     ]
     
     # This empty list will collect jobs from all queries
