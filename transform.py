@@ -10,7 +10,7 @@ def transform_job_data(raw_data):
 
     df = pd.DataFrame(raw_data)
 
-    # 1. Filter - Only jobs located in Israel (done before mapping)
+    # Filter - Only jobs located in Israel (done before mapping)
     if 'job_country' in df.columns:
         df = df[df['job_country'] == 'IL']
 
@@ -30,7 +30,7 @@ def transform_job_data(raw_data):
     df = df[existing_map_keys]
     df.rename(columns=mapping, inplace=True)
 
-    # 2. Text Processing - Shorten job description for better CSV readability
+    # Text Processing - Shorten job description for better CSV readability
     if 'description' in df.columns:
         df['description'] = df['description'].apply(
             lambda x: (str(x)[:200] + '...') if len(str(x)) > 200 else str(x)
