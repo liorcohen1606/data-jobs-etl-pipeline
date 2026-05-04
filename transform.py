@@ -10,9 +10,10 @@ def transform_job_data(raw_data):
 
     df = pd.DataFrame(raw_data)
 
-    # Filter - Only jobs located in Israel (done before mapping)
+    # Filter - Only jobs located in Israel
+    # Updated to match 'Israel' based on actual data observation
     if 'job_country' in df.columns:
-        df = df[df['job_country'] == 'IL']
+        df = df[df['job_country'] == 'Israel']
 
     # Dictionary mapping JSearch fields to internal schema
     mapping = {
@@ -25,12 +26,11 @@ def transform_job_data(raw_data):
     }
 
     # Column selection and renaming
-    # Using only existing columns from the mapping to prevent KeyErrors
     existing_map_keys = [k for k in mapping.keys() if k in df.columns]
     df = df[existing_map_keys]
     df.rename(columns=mapping, inplace=True)
 
-    # 2. Text Processing - Shorten job description for better CSV readability
+    # Text Processing - Shorten job description for better CSV readability
     if 'description' in df.columns:
         df['description'] = df['description'].apply(
             lambda x: (str(x)[:200] + '...') if len(str(x)) > 200 else str(x)
@@ -47,12 +47,10 @@ def transform_job_data(raw_data):
     df.dropna(subset=['job_title', 'company'], inplace=True)
 
     # Text cleaning
-    # Stripping whitespace from critical string columns
     df['job_title'] = df['job_title'].str.strip()
     df['company'] = df['company'].str.strip()
 
     # Type casting for future visualization
-    # Ensuring description is string type for keyword searching
     df['description'] = df['description'].astype(str)
 
     removed = initial_count - len(df)
