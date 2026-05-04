@@ -1,6 +1,4 @@
 import pandas as pd
-from extract import extract_job_data
-
 
 def transform_job_data(raw_data):
     """
@@ -12,6 +10,10 @@ def transform_job_data(raw_data):
 
     df = pd.DataFrame(raw_data)
 
+    # Filter - Only jobs located in Israel (done before mapping)
+    if 'job_country' in df.columns:
+        df = df[df['job_country'] == 'IL']
+
     # Dictionary mapping JSearch fields to internal schema
     mapping = {
         'job_id': 'id',
@@ -22,16 +24,26 @@ def transform_job_data(raw_data):
         'job_apply_link': 'apply_link'
     }
 
-    #Column selection and renaming
-    df = df[list(mapping.keys())]
+    # Column selection and renaming
+    # Using only existing columns from the mapping to prevent KeyErrors
+    existing_map_keys = [k for k in mapping.keys() if k in df.columns]
+    df = df[existing_map_keys]
     df.rename(columns=mapping, inplace=True)
+
+    # 2. Text Processing - Shorten job description for better CSV readability
+    if 'description' in df.columns:
+        df['description'] = df['description'].apply(
+            lambda x: (str(x)[:200] + '...') if len(str(x)) > 200 else str(x)
+        )
 
     # Removing duplicate postings based on job title and company name
     initial_count = len(df)
     df.drop_duplicates(subset=['job_title', 'company'], keep='first', inplace=True)
     
-    #Handling missing values
-    df['city'] = df['city'].fillna('Israel')
+    # Handling missing values
+    if 'city' in df.columns:
+        df['city'] = df['city'].fillna('Israel')
+    
     df.dropna(subset=['job_title', 'company'], inplace=True)
 
     # Text cleaning
