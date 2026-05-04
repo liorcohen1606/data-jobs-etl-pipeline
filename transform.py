@@ -12,7 +12,7 @@ def transform_job_data(raw_data):
 
     # 1. Filter - Only jobs located in Israel (done before mapping)
     if 'job_country' in df.columns:
-        df = df[df['job_country'] == 'Israel']
+        df = df[df['job_country'] == 'IL']
 
     # Dictionary mapping JSearch fields to internal schema
     mapping = {
