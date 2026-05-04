@@ -16,6 +16,7 @@ def load_data_to_sqlite(df, db_name="jobs_data.sqlite3", table_name="cleaned_job
     connect = sqlite3.connect(db_name)
     try:
         df.to_sql(table_name, connect, if_exists='replace', index=False)
+        df.to_csv('all_jobs.csv', index=False, encoding='utf-8-sig')
         print(f"Success! Data loaded into table '{table_name}'.")
 
     except Exception as e:
