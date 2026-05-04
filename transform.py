@@ -9,11 +9,27 @@ def transform_job_data(raw_data):
         return pd.DataFrame()
 
     df = pd.DataFrame(raw_data)
+    
+    # --- DEBUGGING PRINTS ---
+    print(f"DEBUG: Total columns received: {df.columns.tolist()}")
+    if not df.empty:
+        # Checking potential location columns
+        for col in ['job_country', 'job_location', 'job_country_name']:
+            if col in df.columns:
+                print(f"DEBUG: Column '{col}' sample values: {df[col].head(3).tolist()}")
+    # -------------------------
 
-    # Filter - Only jobs located in Israel
-    # Updated to match 'Israel' based on actual data observation
-    if 'job_country' in df.columns:
-        df = df[df['job_country'] == 'Israel']
+    # 1. Flexible Filter - Looking for 'Israel' in any relevant location column
+    # We check job_country first, then job_location as a backup
+    is_israel = pd.Series(False, index=df.index)
+    for col in ['job_country', 'job_location', 'job_country_name']:
+        if col in df.columns:
+            is_israel = is_israel | df[col].astype(str).str.contains('Israel', case=False, na=False)
+    
+    if is_israel.any():
+        df = df[is_israel]
+    else:
+        print("WARNING: No records matched 'Israel'. Check debug prints for actual values.")
 
     # Dictionary mapping JSearch fields to internal schema
     mapping = {
@@ -27,33 +43,39 @@ def transform_job_data(raw_data):
 
     # Column selection and renaming
     existing_map_keys = [k for k in mapping.keys() if k in df.columns]
-    df = df[existing_map_keys]
+    df = df[existing_map_keys].copy()
     df.rename(columns=mapping, inplace=True)
 
-    # Text Processing - Shorten job description for better CSV readability
+    # 2. Text Processing - Shorten job description
     if 'description' in df.columns:
         df['description'] = df['description'].apply(
             lambda x: (str(x)[:200] + '...') if len(str(x)) > 200 else str(x)
         )
 
-    # Removing duplicate postings based on job title and company name
+    # Set initial_count after filtering to see what we are working with
     initial_count = len(df)
-    df.drop_duplicates(subset=['job_title', 'company'], keep='first', inplace=True)
+
+    # Removing duplicate postings
+    if not df.empty:
+        df.drop_duplicates(subset=['job_title', 'company'], keep='first', inplace=True)
     
     # Handling missing values
     if 'city' in df.columns:
         df['city'] = df['city'].fillna('Israel')
     
-    df.dropna(subset=['job_title', 'company'], inplace=True)
+    if not df.empty:
+        df.dropna(subset=['job_title', 'company'], inplace=True)
 
     # Text cleaning
-    df['job_title'] = df['job_title'].str.strip()
-    df['company'] = df['company'].str.strip()
+    if 'job_title' in df.columns:
+        df['job_title'] = df['job_title'].str.strip()
+    if 'company' in df.columns:
+        df['company'] = df['company'].str.strip()
 
-    # Type casting for future visualization
-    df['description'] = df['description'].astype(str)
+    # Type casting
+    if 'description' in df.columns:
+        df['description'] = df['description'].astype(str)
 
-    removed = initial_count - len(df)
-    print(f"Transformation complete: Processed {len(df)} records (Removed {removed} duplicates).")
+    print(f"Transformation complete: Processed {len(df)} records (Initial count after filtering: {initial_count}).")
     
     return df
