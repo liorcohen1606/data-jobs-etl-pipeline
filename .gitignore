@@ -4,3 +4,5 @@ __pycache__/
 api_keys.py
 # Database files
 *.sqlite3
+# Local secrets
+.env
